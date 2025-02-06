@@ -1,0 +1,28 @@
+import React, { useEffect, useRef } from 'react';
+import ClusterLayout from '../lib/clusterLayout';
+import { log } from '../utils/logger';
+
+function ClusterLayoutWrapper({ options, nodes = [] }) {
+  const containerRef = useRef(null);
+  const clusterLayoutRef = useRef(null);
+
+  useEffect(() => {
+    if (containerRef.current && !clusterLayoutRef.current) {
+      clusterLayoutRef.current = new ClusterLayout(containerRef.current, options);
+      log("\uD83E\uDDE9", "ClusterLayoutWrapper: Initialized ClusterLayout", options);
+    }
+    if (clusterLayoutRef.current) {
+      // Clear and update nodes based on the nodes prop
+      clusterLayoutRef.current.nodes = [];
+      nodes.forEach(nodeData => {
+        clusterLayoutRef.current.addNode(nodeData);
+      });
+      clusterLayoutRef.current.simulation.alphaTarget(0.6).restart();
+      log("\uD83E\uDDE9", "ClusterLayoutWrapper: Updated nodes", nodes);
+    }
+  }, [options, nodes]);
+
+  return <div ref={containerRef} id="clusterContainer" style={{ width: '100vw', height: '100vh' }} />;
+}
+
+export default ClusterLayoutWrapper;

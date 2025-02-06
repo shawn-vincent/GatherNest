@@ -1,0 +1,14 @@
+# Ignore node_modules directory
+node_modules/
+
+# Ignore build or dist directories
+build/
+dist/
+
+# Ignore log files
+*.log
+
+# Ignore LLM model files (example pattern)
+models/
+*.bin
+*.pt

@@ -1,0 +1,147 @@
+import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import socket from '../socket';
+import SimplePeer from 'simple-peer';
+import LocalVideoPreview from '../components/LocalVideoPreview';
+import ClusterLayoutWrapper from '../components/ClusterLayoutWrapper';
+import './Room.css';
+import { log, logError } from '../utils/logger';
+
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
+
+function Room() {
+  const query = useQuery();
+  const safeName = query.get('url');
+  const [localStream, setLocalStream] = useState(null);
+  const [isMuted, setIsMuted] = useState(false);
+  const [peerNodes, setPeerNodes] = useState([]);
+  const [peers, setPeers] = useState({});
+
+  useEffect(() => {
+    if (!safeName) {
+      alert("No room specified.");
+      return;
+    }
+    log("\uD83D\uDEAA", "Room: Emitting joinRoom for", safeName);
+    socket.emit('joinRoom', safeName);
+
+    // Request local media
+    navigator.mediaDevices.getUserMedia({
+      video: { width: { ideal: 640 }, height: { ideal: 480 } },
+      audio: true
+    })
+      .then(stream => {
+        log("\uD83C\uDFA5", "Room: Got local media stream");
+        setLocalStream(stream);
+      })
+      .catch(err => {
+        logError("\uD83D\uDEAE", "Room: Error accessing camera", err);
+        alert("Error accessing camera: " + err.message);
+      });
+
+    socket.on('peerConnect', (data) => {
+      const { peerId, name } = data;
+      log("\uD83D\uDC49", "Room: Received peerConnect from", peerId);
+      if (!localStream) {
+        log("\u23F3", "Room: Local stream not ready; ignoring peerConnect", peerId);
+        return;
+      }
+      if (!peers[peerId]) {
+        const isInitiator = (socket.id > peerId);
+        const peer = new SimplePeer({
+          initiator: isInitiator,
+          trickle: false,
+          stream: localStream
+        });
+        peer.on('signal', (signalData) => {
+          log("\uD83D\uDCF1", "Room: Peer signal event for", peerId, signalData);
+          socket.emit('signal', { signal: signalData, peerId });
+        });
+        peer.on('stream', (remoteStream) => {
+          log("\uD83D\uDCFA", "Room: Received remote stream for peer", peerId);
+          setPeerNodes(prev => {
+            const filtered = prev.filter(n => n.id !== peerId);
+            return [
+              ...filtered,
+              {
+                id: peerId,
+                contentType: "videoStream",
+                content: remoteStream,
+                borderColor: "#FFFFFF",
+                displayName: name || "Anonymous",
+                startPosition: { x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight }
+              }
+            ];
+          });
+        });
+        peer.on('close', () => {
+          log("\uD83D\uDD12", "Room: Peer connection closed for", peerId);
+          setPeerNodes(prev => prev.filter(n => n.id !== peerId));
+          setPeers(prev => {
+            const newPeers = { ...prev };
+            delete newPeers[peerId];
+            return newPeers;
+          });
+        });
+        setPeers(prev => ({ ...prev, [peerId]: peer }));
+      }
+    });
+
+    socket.on('signal', (data) => {
+      const { peerId, signal } = data;
+      log("\uD83D\uDCF1", "Room: Received signal for peer", peerId, signal);
+      if (peers[peerId]) {
+        peers[peerId].signal(signal);
+      }
+    });
+
+    socket.on('peerDisconnect', ({ peerId }) => {
+      log("\uD83D\uDC4B", "Room: Peer disconnected", peerId);
+      if (peers[peerId]) {
+        peers[peerId].destroy();
+        setPeers(prev => {
+          const newPeers = { ...prev };
+          delete newPeers[peerId];
+          return newPeers;
+        });
+        setPeerNodes(prev => prev.filter(n => n.id !== peerId));
+      }
+    });
+
+    return () => {
+      socket.off('peerConnect');
+      socket.off('signal');
+      socket.off('peerDisconnect');
+    };
+  }, [safeName, localStream, peers]);
+
+  const handleMuteToggle = () => {
+    setIsMuted(!isMuted);
+    if (localStream) {
+      localStream.getAudioTracks().forEach(track => {
+        track.enabled = isMuted;
+      });
+      log("\uD83D\uDD07", "Room: " + (isMuted ? "Muted" : "Unmuted") + " local audio");
+    }
+  };
+
+  return (
+    <div className="room">
+      <header id="header">
+        <h1>HearthSpace - Room</h1>
+      </header>
+      <ClusterLayoutWrapper options={{ layoutOnViewport: true }} nodes={peerNodes} />
+      {localStream && (
+        <LocalVideoPreview
+          stream={localStream}
+          isMuted={isMuted}
+          onToggleMute={handleMuteToggle}
+        />
+      )}
+    </div>
+  );
+}
+
+export default Room;

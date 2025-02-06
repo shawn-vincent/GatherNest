@@ -1,0 +1,25 @@
+.room {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  color: white;
+  background: black;
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  min-height: 100vh;
+}
+
+#header {
+  background: rgba(0,0,0,0.4);
+  padding: 10px;
+  text-align: center;
+}
+
+#clusterContainer {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  z-index: 10;
+}

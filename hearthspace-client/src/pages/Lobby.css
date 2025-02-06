@@ -1,0 +1,75 @@
+.lobby {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  color: white;
+  background: gray;
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  min-height: 100vh;
+}
+
+#header {
+  background: rgba(0,0,0,0.4);
+  padding: 10px;
+  text-align: center;
+}
+
+.lobby-controls {
+  margin: 10px auto;
+  display: inline-block;
+  background: rgba(0,0,0,0.4);
+  border-radius: 6px;
+  padding: 10px;
+  max-width: 600px;
+  text-align: left;
+}
+
+.roomRow {
+  margin: 4px;
+  padding: 4px;
+  cursor: pointer;
+  background: rgba(255,255,255,0.1);
+  border-radius: 3px;
+}
+
+.roomRow:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+input#newRoomName {
+  width: 180px;
+  padding: 4px;
+  margin-top: 8px;
+}
+
+button#createRoomBtn {
+  padding: 4px 8px;
+  margin-left: 4px;
+}
+
+/* Styles for the Misc section */
+.misc-links {
+  margin: 20px auto;
+  display: inline-block;
+  background: rgba(0,0,0,0.4);
+  border-radius: 6px;
+  padding: 10px;
+  max-width: 600px;
+  text-align: left;
+}
+
+.misc-links h2 {
+  margin-top: 0;
+}
+
+.misc-links a {
+  color: white;
+  text-decoration: none;
+}
+
+.misc-links a:hover {
+  text-decoration: underline;
+}
