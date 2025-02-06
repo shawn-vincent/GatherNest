@@ -19,3 +19,7 @@ dist/
 models/
 *.bin
 *.pt
+
+*~
+
+.DS_Store
