@@ -15,12 +15,13 @@ function Room() {
   const query = useQuery();
   const safeName = query.get('url');
   const navigate = useNavigate();
+  const [roomConfig, setRoomConfig] = useState(null);
   const [localStream, setLocalStream] = useState(null);
   const [isMuted, setIsMuted] = useState(false);
   const [peerNodes, setPeerNodes] = useState([]);
   const [peers, setPeers] = useState({});
   const joinEmittedRef = useRef(false);
-
+    
   // Request local media once on mount
   useEffect(() => {
     navigator.mediaDevices.getUserMedia({
@@ -53,6 +54,21 @@ function Room() {
     if (!safeName) {
       alert("No room specified.");
       return;
+    }
+
+    const handleRoomJoined = (data) => {
+	log("\uD83D\uDC49", "Room: Joined Event", data);
+	// Save the room configuration in state.
+	setRoomConfig(data);
+
+	// Optionally, update the document body background.
+	if (data.imageURL) {
+	    log("\uD83D\uDC49", "Room: got background image", data.imageURL);
+	    document.body.style.backgroundImage = `url(${data.imageURL})`;
+	    document.body.style.backgroundSize = "cover";
+	    document.body.style.backgroundRepeat = "no-repeat";
+	    document.body.style.backgroundPosition = "center";
+	}
     }
 
     const handlePeerConnect = (data) => {
@@ -150,11 +166,13 @@ function Room() {
       }
     };
 
+    socket.on('roomJoined', handleRoomJoined);
     socket.on('peerConnect', handlePeerConnect);
     socket.on('signal', handleSignal);
     socket.on('peerDisconnect', handlePeerDisconnect);
 
     return () => {
+      socket.off('roomJoined', handleRoomJoined);
       socket.off('peerConnect', handlePeerConnect);
       socket.off('signal', handleSignal);
       socket.off('peerDisconnect', handlePeerDisconnect);
@@ -204,6 +222,7 @@ function Room() {
 
   // Handler for "Back to Lobby" button
   const handleBackToLobby = () => {
+    log("\uD83D\uDC4B", "Room: Back to Lobby clicked");
     navigate("/");
   };
 
@@ -232,10 +251,7 @@ function Room() {
 	{localStream && (
 	    <div className="local-avatar-container">
 		<Avatar
-		    type="video"
 		    stream={localStream}
-		    isMuted={isMuted}
-		    onToggleMute={handleMuteToggle}
 		    name="You"
 		    style={{ width: '220px', height: '150px' }}
 		/>

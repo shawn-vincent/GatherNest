@@ -1,66 +1,88 @@
-.avatar {
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.1);
-  border: 4px solid #FFFFFF;
-  border-radius: 15px;
-  overflow: hidden;
+/* Outer container to allow absolute positioning of icons */
+.avatar-container {
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
+/* 🔹 Rounded Avatar (Now Actually Works!) */
+.avatar {
+  border: 4px solid #FFFFFF;
+  border-radius: 50%; /* Keeps it oval if the width is longer */
+  overflow: hidden; /* Ensures content stays rounded */
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  xwidth: 180px; /* Adjust width */
+  xheight: 120px; /* Adjust height to make it oval */
+  box-shadow: 0px 0px 20px rgba(232, 155, 95, 0.7);
+}
+
+
+/* 🔹 Video stays inside the rounded border */
 .avatar video {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0.8;
   display: block;
 }
 
-.placeholder {
+/* 🔹 Placeholder for Video Off (Now Works Properly!) */
+.video-off-placeholder {
   width: 100%;
   height: 100%;
-  background: #000;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
   font-size: 14px;
+  border-radius: 50%;
 }
 
-.mute-button {
+/* 🔹 Floating Icon Column - Now Properly Outside the Avatar */
+.avatar-icons {
   position: absolute;
-  bottom: 5px;
-  right: 5px;
-  background: rgba(255,255,255,0.7);
-  color: #000;
-  padding: 4px 8px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 12px;
+  top: 50%;
+  right: -25px; /* Moves icons fully outside the Avatar */
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
   z-index: 10;
 }
 
-.avatar-content {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.avatar-initials {
-  width: 100%;
-  height: 100%;
+/* 🔹 Individual Floating Icons */
+.avatar-icon {
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  padding: 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #777;
-  color: #fff;
-  font-size: 2em;
+  width: 36px;
+  height: 36px;
 }
 
+.avatar-icon:hover {
+  background: rgba(255, 255, 255, 0.8);
+  color: black;
+}
+
+/* 🔹 Name Label */
 .name-label {
   position: absolute;
-  bottom: 5px;
-  left: 5px;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
   color: #fff;
-  font-size: 12px;
+  font-size: 14px;
 }

@@ -1,75 +1,70 @@
 .lobby {
-  margin: 0;
-  padding: 0;
-  font-family: Arial, sans-serif;
-  color: white;
-  background: gray;
-  background-attachment: fixed;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+  font-family: 'Poppins', sans-serif;
+  color: #333;
+  background: #F8F7F2;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 #header {
-  background: rgba(0,0,0,0.4);
-  padding: 10px;
   text-align: center;
+  font-size: 24px;
+  color: #8B5E3B;
+  padding: 10px;
 }
 
 .lobby-controls {
-  margin: 10px auto;
-  display: inline-block;
-  background: rgba(0,0,0,0.4);
-  border-radius: 6px;
-  padding: 10px;
-  max-width: 600px;
-  text-align: left;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  max-width: 400px;
+  text-align: center;
 }
 
 .roomRow {
-  margin: 4px;
-  padding: 4px;
+  padding: 10px;
+  margin: 5px;
+  border-radius: 8px;
+  background: rgba(163, 201, 168, 0.3);
   cursor: pointer;
-  background: rgba(255,255,255,0.1);
-  border-radius: 3px;
+  transition: background 0.3s ease-in-out;
 }
 
 .roomRow:hover {
-  background: rgba(255,255,255,0.2);
+  background: rgba(163, 201, 168, 0.6);
 }
 
-input#newRoomName {
-  width: 180px;
-  padding: 4px;
-  margin-top: 8px;
+#newRoomName {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  margin-top: 10px;
 }
 
-button#createRoomBtn {
-  padding: 4px 8px;
-  margin-left: 4px;
-}
-
-/* Styles for the Misc section */
-.misc-links {
-  margin: 20px auto;
-  display: inline-block;
-  background: rgba(0,0,0,0.4);
-  border-radius: 6px;
-  padding: 10px;
-  max-width: 600px;
-  text-align: left;
-}
-
-.misc-links h2 {
-  margin-top: 0;
-}
-
-.misc-links a {
+#createRoomBtn {
+  background: #8B5E3B;
   color: white;
-  text-decoration: none;
+  border-radius: 20px;
+  padding: 10px 15px;
+  margin-top: 10px;
+  transition: background 0.3s;
 }
 
-.misc-links a:hover {
-  text-decoration: underline;
+#createRoomBtn:hover {
+  background: #E89B5F;
+}
+
+/* 🔹 Position Local Avatar (Video Preview) in Lower-Right, Matching Room.js */
+.local-avatar {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  /*border-radius: 12px;*/
+  /*box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);*/
 }

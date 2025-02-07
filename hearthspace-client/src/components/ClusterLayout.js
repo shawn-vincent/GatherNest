@@ -98,10 +98,9 @@ function ClusterLayout({ options = {}, nodes = [] }) {
     }
     nodeEl._reactRoot.render(
       <Avatar
-        type={type}
         stream={d.content}
-        isMuted={false} // Adjust as needed for remote nodes.
         name={d.displayName}
+	showControls={false}
         style={{ width: dims.width + 'px', height: dims.height + 'px' }}
       />
     );
